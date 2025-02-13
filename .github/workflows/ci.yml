@@ -2,32 +2,29 @@ name: CI
 
 on:
   push:
-    branches: [ main, dev ]
+    branches:
+      - main
+      - dev
   pull_request:
-    branches: [ main, dev ]
+    branches:
+      - main
+      - dev
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout del código
+        uses: actions/checkout@v3
 
-    - name: Use Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18.x'
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Cache node modules
-      uses: actions/cache@v3  # Updated cache action
-      with:
-        path: ~/.npm  # Correct path for npm cache
-        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+      - name: Instalar dependencias
+        run: npm ci
 
-    - name: Install dependencies
-      run: npm install
-
-    - name: Run tests
-      run: npm test
+      - name: Ejecutar pruebas
+        run: npm test
